@@ -142,21 +142,29 @@ if (args[0] === 'movie-this') {
 */
 if (args[0] === 'do-what-it-says') {
 
+    var fs = require('fs');
+    fs.readFile('random.txt', 'utf8', function(error, data) {
+        var songList = data.split(',');
+        var command = songList[0].replace(/[* ']/g, '');
+        var song = songList[1].replace(/["]+/g, '');
+
+        var spotify = require('spotify');
+        spotify.search({type: 'track', query: song}, function(err, data) {
+            if ( err ) {
+                    console.log('Error occurred: ' + err);
+                    return;
+            }
+
+            for (var i = 0; i < data.tracks.items.length; i++) {
+                console.log('artists:       ' + data.tracks.items[i].artists[0].name);
+                console.log('song name:     ' + data.tracks.items[i].name);
+                console.log('preview link:  ' + data.tracks.items[i].preview_url);
+                console.log('album name:    ' + data.tracks.items[i].album.name);
+                console.log('');
+            }
+
+        });
+
+    });
 
 }
-
-//     Make a JavaScript file named liri.js.
-
-//     At the top of the liri.js file, write the code you need to grab the data from keys.js. Then store the keys in a variable.
-
-//     Make it so liri.js can take in one of the following commands:
-
-
-
-// * `my-tweets`
-
-// * `spotify-this-song`
-
-// * `movie-this`
-
-// * `do-what-it-says`
